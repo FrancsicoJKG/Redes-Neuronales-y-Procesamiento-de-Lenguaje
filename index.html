@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UMG — AI Sentiment Analyzer</title>
+
+  <!-- Estilos de la aplicación -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Librería de TensorFlow.js para ejecutar la red neuronal en el navegador -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.15.0/dist/tf.min.js"></script>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════
+     CONTENEDOR PRINCIPAL DE LA APLICACIÓN
+     ════════════════════════════════════════════ -->
+<div class="app">
+
+  <!-- ── SIDEBAR: navegación lateral ── -->
+  <aside class="sidebar">
+
+    <!-- Logo y nombre -->
+    <div class="brand">
+      <div class="brand-logo">AI</div>
+      <div>
+        <strong>UMG</strong><br>
+        <small>Consola de Laboratorio Neural</small>
+      </div>
+    </div>
+
+    <!-- Menú de navegación con anclas a cada sección -->
+    <div>
+      <div class="nav-label">MENÚ</div>
+      <nav class="nav">
+        <a href="#analizar" class="active">▣ Analizar terminal</a>
+        <a href="#dataset">◇ Dataset NLP</a>
+        <a href="#training">⟐ Registro de entrenamiento</a>
+        <a href="#conceptos">◎ Configuración del sistema</a>
+      </nav>
+    </div>
+
+    <!-- Tarjeta de telemetría en tiempo real (se actualiza con JS) -->
+    <div class="status-card">
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="dot"></span>
+        <strong>Telemetría en vivo</strong>
+      </div>
+      <div class="row"><span>Modelo</span><span id="side-model">En espera</span></div>
+      <div class="row"><span>Muestras</span><span id="side-samples">0</span></div>
+      <div class="row"><span>Vocabulario</span><span id="side-vocab">—</span></div>
+    </div>
+
+  </aside>
+
+  <!-- ── ÁREA PRINCIPAL ── -->
+  <main>
+
+    <!-- Encabezado: título + chips de tecnologías -->
+    <section class="topbar">
+      <div>
+        <div class="eyebrow">AI Sentiment Analyzer</div>
+        <h1>AI <span>Sentiment Analyzer</span></h1>
+        <p class="subtitle">Laboratorio de Redes Neuronales y NLP — Ing. Richard Ortiz</p>
+      </div>
+      <div class="chipbar">
+        <span class="chip">TensorFlow.js</span>
+        <span class="chip">NLP</span>
+        <span class="chip">Sigmoid</span>
+        <span class="chip">105 min</span>
+      </div>
+    </section>
+
+    <!-- Grid principal: columna izquierda (dataset) + columna derecha (workspace) -->
+    <section class="grid">
+
+      <!-- ── PANEL IZQUIERDO: Dataset y métricas ── -->
+      <div class="panel" id="dataset">
+        <div class="panel-head">
+          <span class="panel-title">Indicador de estado del sistema</span>
+          <span class="panel-code">DATASET::READY</span>
+        </div>
+        <div class="panel-body">
+
+          <!-- 4 métricas: precisión, pérdida, vocabulario, estado -->
+          <div class="mini-grid">
+            <div class="metric"><div class="value" id="m-acc">—</div><div class="name">Precisión del modelo</div></div>
+            <div class="metric"><div class="value" id="m-loss">—</div><div class="name">Pérdida final</div></div>
+            <div class="metric"><div class="value" id="m-vocab">—</div><div class="name">Tokens de vocabulario</div></div>
+            <div class="metric"><div class="value" id="m-state">INACTIVO</div><div class="name">Actividad del sistema</div></div>
+          </div>
+
+          <!-- Nota explicativa del funcionamiento del laboratorio -->
+          <div class="note">
+            Esta versión funciona como un panel de laboratorio: primero se entrena el modelo con frases técnicas,
+            luego se analiza una opinión nueva y se observa el porcentaje de confianza. Cuando el resultado queda
+            cerca de 50%, se interpreta como <strong>incertidumbre</strong>.
+          </div>
+
+          <!-- Lista de frases del dataset (se renderiza con JS) -->
+          <div style="margin-top:18px" class="panel-title">Dataset de entrenamiento</div>
+          <div class="dataset" id="dataset-list" style="margin-top:12px"></div>
+
+          <!-- Formulario para agregar nuevas frases positivas o negativas -->
+          <div class="add-dataset">
+            <input type="text" id="new-sample" placeholder="Agregar frase al dataset..." />
+            <button class="pos-btn" onclick="addSample(1)">+ POS</button>
+            <button class="neg-btn" onclick="addSample(0)">+ NEG</button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── COLUMNA DERECHA: Entrenamiento + Análisis + Conceptos ── -->
+      <div class="workspace">
+
+        <!-- PANEL: Entrenamiento de la red neuronal -->
+        <div class="panel" id="training">
+          <div class="panel-head">
+            <span class="panel-title">Entrenamiento de red neuronal</span>
+            <span class="panel-code" id="train-state">MODELO::SIN ENTRENAR</span>
+          </div>
+          <div class="panel-body">
+
+            <!-- Sliders de hiperparámetros: tasa de aprendizaje, épocas, unidades ocultas -->
+            <div class="controls">
+              <div class="control">
+                <label>TASA DE APRENDIZAJE</label>
+                <strong id="lr-label">0.010</strong>
+                <input id="lr" type="range" min="1" max="80" value="10" oninput="syncParams()" />
+              </div>
+              <div class="control">
+                <label>ÉPOCAS</label>
+                <strong id="ep-label">160</strong>
+                <input id="epochs" type="range" min="30" max="420" step="10" value="160" oninput="syncParams()" />
+              </div>
+              <div class="control">
+                <label>UNIDADES OCULTAS</label>
+                <strong id="hu-label">32</strong>
+                <input id="hidden" type="range" min="8" max="96" step="4" value="32" oninput="syncParams()" />
+              </div>
+            </div>
+
+            <!-- Botones: entrenar, cargar ejemplo, limpiar -->
+            <div class="actions">
+              <button class="primary" id="train-btn" onclick="train()">▶ Entrenar modelo</button>
+              <button class="ghost" onclick="loadDemo()">Cargar ejemplo</button>
+              <button class="ghost" onclick="resetOutput()">Limpiar salida</button>
+            </div>
+
+            <!-- Consola de log: muestra el progreso época por época -->
+            <div class="log" id="log" style="margin-top:14px">
+              <div>// Esperando entrenamiento del modelo...</div>
+            </div>
+
+            <!-- Gráficas de pérdida y precisión durante el entrenamiento -->
+            <div class="chart-row">
+              <div class="chart-box">
+                <span>PÉRDIDA</span>
+                <canvas id="lossCanvas"></canvas>
+              </div>
+              <div class="chart-box">
+                <span>PRECISIÓN</span>
+                <canvas id="accCanvas"></canvas>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- PANEL: Análisis de sentimiento (inferencia) -->
+        <div class="panel" id="analizar">
+          <div class="panel-head">
+            <span class="panel-title">Terminal de entrada — análisis de texto</span>
+            <span class="panel-code">INFERENCE::NLP</span>
+          </div>
+          <div class="panel-body">
+
+            <!-- Textarea para ingresar la frase a clasificar -->
+            <textarea id="text" placeholder="Escribe una opinión técnica para analizar sentimiento...
+Ejemplo: El servidor Proxmox es estable y responde rápido."></textarea>
+            <div class="actions">
+              <button class="primary" id="analyze-btn" disabled onclick="analyze()">Ejecutar sentimiento</button>
+            </div>
+
+            <!-- Resultado: predicción y visualización de tokens -->
+            <div class="result" style="margin-top:16px">
+
+              <!-- Cuadro izquierdo: etiqueta POSITIVO/NEGATIVO, barra de confianza y porcentajes -->
+              <div class="prediction">
+                <h2 id="pred-label">En espera</h2>
+                <p id="pred-info">Entrena el modelo y luego escribe una frase para clasificarla.</p>
+                <div class="bar-wrap"><div class="bar" id="conf-bar"></div></div>
+                <p id="pct-line">Positivo: — | Negativo: —</p>
+              </div>
+
+              <!-- Cuadro derecho: tokens coloreados según su polaridad -->
+              <div class="prediction">
+                <h2 style="font-size:20px;color:var(--cyan)">Tokens</h2>
+                <p>Palabras detectadas después del preprocesamiento.</p>
+                <div class="tokens" id="tokens"></div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- PANEL: Conceptos teóricos del análisis -->
+        <div class="panel" id="conceptos">
+          <div class="panel-head">
+            <span class="panel-title">Conceptos de análisis</span>
+            <span class="panel-code">UNIT::6.4</span>
+          </div>
+          <div class="panel-body">
+            <div class="note" style="margin-top:0">
+              <strong>Lectura del resultado:</strong> un porcentaje alto indica que el modelo encontró patrones
+              similares a los ejemplos del dataset. Un resultado cercano a 50% refleja incertidumbre, causada por
+              frases ambiguas, sarcasmo, pocos datos o palabras que el modelo no ha visto durante el entrenamiento.
+            </div>
+          </div>
+        </div>
+
+      </div><!-- fin .workspace -->
+    </section><!-- fin .grid -->
+  </main>
+</div><!-- fin .app -->
+
+<!-- Lógica de la aplicación (cargado al final para no bloquear el render) -->
+<script src="script.js"></script>
+
+</body>
+</html>
