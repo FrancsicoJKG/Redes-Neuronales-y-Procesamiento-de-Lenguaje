@@ -30,11 +30,13 @@ Permite entrenar una red neuronal pequeña con frases de ejemplo (positivas y ne
 ## Estructura del proyecto
 
 ```
-index.html          → Archivo único con toda la aplicación
+proyecto/
+│
+├── README.md       → Documentación general del proyecto
+├── index.html      → Contiene la estructura principal de la página
+├── style.css       → Contiene los estilos visuales de la aplicación
+└── script.js       → Contiene la lógica e interactividad del sistema
 ```
-
-El proyecto es un único archivo `.html` autocontenido. No tiene dependencias locales ni archivos adicionales.
-
 ---
 
 ## Cómo usarlo
