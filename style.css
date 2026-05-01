@@ -1,0 +1,665 @@
+/* ══════════════════════════════════════════════
+   Variables globales de color y tipografía
+   ══════════════════════════════════════════════ */
+:root {
+  --bg: #070b12;
+  --panel: #0c111b;
+  --panel2: #111827;
+  --panel3: #151f32;
+  --line: #243047;
+  --line2: #34435f;
+  --txt: #e8eefc;
+  --muted: #8492ad;
+  --dim: #52617c;
+  --blue: #1d9bff;
+  --blue2: #006ee6;
+  --cyan: #44d8ff;
+  --green: #00e6a8;
+  --red: #ff4b6e;
+  --yellow: #ffd166;
+  --violet: #a78bfa;
+  --mono: Consolas, "Courier New", monospace;
+  --sans: Inter, Segoe UI, Arial, sans-serif;
+}
+
+/* ══════════════════════════════════════════════
+   Reset básico y estilos globales
+   ══════════════════════════════════════════════ */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 70% 10%, rgba(29,155,255,.13), transparent 35%),
+    radial-gradient(circle at 15% 80%, rgba(0,230,168,.08), transparent 30%),
+    var(--bg);
+  color: var(--txt);
+  font-family: var(--sans);
+}
+
+/* Cuadrícula decorativa de fondo (no interactiva) */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(68,216,255,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(68,216,255,.035) 1px, transparent 1px);
+  background-size: 34px 34px;
+  mask-image: linear-gradient(to bottom, black, transparent 90%);
+}
+
+/* ══════════════════════════════════════════════
+   Contenedor principal (sidebar + main)
+   ══════════════════════════════════════════════ */
+.app {
+  width: min(1320px, 96vw);
+  min-height: 92vh;
+  margin: 24px auto;
+  border: 1px solid rgba(68,216,255,.18);
+  border-radius: 18px;
+  overflow: hidden;
+  background: rgba(7,11,18,.86);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.02), 0 30px 80px rgba(0,0,0,.45);
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  position: relative;
+}
+
+/* ══════════════════════════════════════════════
+   Barra lateral izquierda
+   ══════════════════════════════════════════════ */
+.sidebar {
+  background: rgba(12,17,27,.96);
+  border-right: 1px solid var(--line);
+  padding: 24px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* Logo y nombre de la aplicación */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-logo {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--blue), var(--cyan));
+  color: #00111d;
+  font-weight: 900;
+  box-shadow: 0 0 22px rgba(29,155,255,.35);
+}
+
+.brand small {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+}
+
+/* Etiqueta de sección del menú */
+.nav-label {
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .16em;
+  margin: 4px 0 8px;
+}
+
+/* Estilos de los enlaces del menú lateral */
+.nav a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  color: var(--muted);
+  text-decoration: none;
+  border-radius: 10px;
+  font-size: 13px;
+  transition: .15s ease;
+}
+
+.nav a:hover,
+.nav a.active {
+  background: rgba(29,155,255,.1);
+  color: var(--txt);
+}
+
+/* Tarjeta de estado en la parte inferior del sidebar */
+.status-card {
+  margin-top: auto;
+  border: 1px solid var(--line);
+  background: rgba(21,31,50,.55);
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.status-card .row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+/* Punto verde indicador de estado activo */
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 12px var(--green);
+}
+
+/* ══════════════════════════════════════════════
+   Área principal de contenido
+   ══════════════════════════════════════════════ */
+main {
+  padding: 28px;
+  overflow: hidden;
+}
+
+/* Barra superior con título y chips de tecnologías */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.eyebrow {
+  color: var(--cyan);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+h1 {
+  font-size: clamp(34px, 5vw, 66px);
+  line-height: .95;
+  letter-spacing: -.05em;
+  margin-bottom: 12px;
+}
+
+h1 span {
+  color: var(--blue);
+  text-shadow: 0 0 24px rgba(29,155,255,.28);
+}
+
+.subtitle {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 13px;
+}
+
+/* Chips de tecnologías usadas (esquina superior derecha) */
+.chipbar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.chip {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  background: rgba(21,31,50,.65);
+  padding: 7px 10px;
+  border-radius: 999px;
+}
+
+/* ══════════════════════════════════════════════
+   Grid de dos columnas: dataset + workspace
+   ══════════════════════════════════════════════ */
+.grid {
+  display: grid;
+  grid-template-columns: 1.05fr 1.2fr;
+  gap: 18px;
+  align-items: start;
+}
+
+/* ══════════════════════════════════════════════
+   Paneles con cabecera y cuerpo
+   ══════════════════════════════════════════════ */
+.panel {
+  background: rgba(12,17,27,.88);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 16px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(17,24,39,.65);
+}
+
+.panel-title {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .13em;
+  color: var(--txt);
+  text-transform: uppercase;
+}
+
+.panel-code {
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: 10px;
+}
+
+.panel-body {
+  padding: 16px;
+}
+
+/* Mini cuadrícula para las 4 métricas del modelo */
+.mini-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+/* Tarjeta individual de métrica (precisión, pérdida, etc.) */
+.metric {
+  background: rgba(21,31,50,.72);
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  padding: 14px;
+}
+
+.metric .value {
+  font-family: var(--mono);
+  font-size: 24px;
+  color: var(--green);
+  font-weight: 800;
+}
+
+.metric .name {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  font-family: var(--mono);
+}
+
+/* ══════════════════════════════════════════════
+   Dataset: lista de frases de entrenamiento
+   ══════════════════════════════════════════════ */
+
+/* Lista scrolleable de frases del dataset */
+.dataset {
+  display: grid;
+  gap: 8px;
+  max-height: 330px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+/* Fila de muestra: etiqueta POS/NEG + texto */
+.sample {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  gap: 10px;
+  align-items: start;
+  padding: 10px;
+  border: 1px solid var(--line);
+  background: rgba(17,24,39,.72);
+  border-radius: 11px;
+}
+
+/* Etiqueta de clasificación POS o NEG */
+.tag {
+  text-align: center;
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: 10px;
+  padding: 4px 0;
+  border-radius: 6px;
+}
+
+.tag.pos { color: var(--green); background: rgba(0,230,168,.1); }
+.tag.neg { color: var(--red);   background: rgba(255,75,110,.1); }
+
+.sample p {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+/* ══════════════════════════════════════════════
+   Controles de hiperparámetros (sliders)
+   ══════════════════════════════════════════════ */
+
+/* Grid de 3 controles deslizantes */
+.controls {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+/* Caja individual de cada hiperparámetro con slider */
+.control {
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: rgba(21,31,50,.62);
+  padding: 14px;
+}
+
+.control label {
+  display: block;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  margin-bottom: 8px;
+}
+
+.control strong {
+  display: block;
+  color: var(--cyan);
+  font-family: var(--mono);
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+input[type=range] {
+  width: 100%;
+  accent-color: var(--blue);
+}
+
+/* ══════════════════════════════════════════════
+   Workspace: columna derecha
+   ══════════════════════════════════════════════ */
+
+/* Columna derecha: entrenamiento + análisis apilados verticalmente */
+.workspace {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+
+/* Área de texto para ingresar la frase a analizar */
+textarea {
+  width: 100%;
+  min-height: 180px;
+  resize: vertical;
+  padding: 18px;
+  color: var(--txt);
+  background: #070b12;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.6;
+  outline: none;
+}
+
+textarea:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 4px rgba(29,155,255,.12);
+}
+
+/* Fila de botones de acción */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+/* Botón base */
+button {
+  border: none;
+  cursor: pointer;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 800;
+  transition: .15s ease;
+}
+
+/* Botón principal (azul con gradiente) */
+.primary {
+  color: #06101d;
+  background: linear-gradient(135deg, var(--blue), var(--cyan));
+  box-shadow: 0 10px 28px rgba(29,155,255,.22);
+}
+
+.primary:hover    { transform: translateY(-1px); }
+.primary:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+
+/* Botón secundario (fondo oscuro) */
+.ghost {
+  background: rgba(21,31,50,.65);
+  color: var(--muted);
+  border: 1px solid var(--line);
+}
+
+.ghost:hover { color: var(--txt); border-color: var(--line2); }
+
+/* Botones de agregar muestra positiva o negativa */
+.pos-btn { color: var(--green); background: rgba(0,230,168,.1);  border: 1px solid rgba(0,230,168,.3); }
+.neg-btn { color: var(--red);   background: rgba(255,75,110,.1); border: 1px solid rgba(255,75,110,.3); }
+
+/* Fila para agregar nuevas frases al dataset */
+.add-dataset {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+input[type=text] {
+  min-width: 0;
+  background: #070b12;
+  color: var(--txt);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px;
+  font-family: var(--mono);
+  outline: none;
+}
+
+/* ══════════════════════════════════════════════
+   Resultado de predicción
+   ══════════════════════════════════════════════ */
+
+/* Grid de dos columnas: predicción + tokens */
+.result {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* Cuadro que muestra la predicción final */
+.prediction {
+  background: rgba(21,31,50,.7);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 18px;
+  min-height: 164px;
+}
+
+.prediction h2 {
+  font-size: 34px;
+  letter-spacing: -.04em;
+  margin-bottom: 6px;
+}
+
+/* Color verde si positivo, rojo si negativo */
+.prediction h2.pos { color: var(--green); }
+.prediction h2.neg { color: var(--red); }
+
+.prediction p {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* Barra de confianza del modelo */
+.bar-wrap {
+  height: 11px;
+  background: #070b12;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 14px 0 8px;
+}
+
+.bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--blue2), var(--cyan));
+  transition: .45s ease;
+}
+
+/* ══════════════════════════════════════════════
+   Tokens coloreados
+   ══════════════════════════════════════════════ */
+
+/* Contenedor de tokens */
+.tokens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+/* Cada token con su color: verde=positivo, rojo=negativo, gris=neutro */
+.token {
+  border: 1px solid var(--line);
+  background: #0b1019;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 5px 7px;
+  border-radius: 8px;
+}
+
+.token.good {
+  color: var(--green);
+  border-color: rgba(0,230,168,.35);
+  background: rgba(0,230,168,.08);
+}
+
+.token.bad {
+  color: var(--red);
+  border-color: rgba(255,75,110,.35);
+  background: rgba(255,75,110,.08);
+}
+
+/* ══════════════════════════════════════════════
+   Consola de log del entrenamiento
+   ══════════════════════════════════════════════ */
+.log {
+  height: 170px;
+  overflow: auto;
+  background: #070b12;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+/* Colores de las líneas del log según resultado */
+.log .ok   { color: var(--green); }
+.log .warn { color: var(--yellow); }
+.log .bad  { color: var(--red); }
+
+/* ══════════════════════════════════════════════
+   Gráficas de pérdida y precisión
+   ══════════════════════════════════════════════ */
+
+/* Fila de gráficas lado a lado */
+.chart-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.chart-box {
+  border: 1px solid var(--line);
+  background: #070b12;
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.chart-box span {
+  display: block;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 10px;
+  margin-bottom: 8px;
+  letter-spacing: .12em;
+}
+
+canvas {
+  width: 100%;
+  height: 120px;
+}
+
+/* ══════════════════════════════════════════════
+   Caja de nota informativa
+   ══════════════════════════════════════════════ */
+.note {
+  margin-top: 18px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(17,24,39,.65);
+  padding: 16px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.note strong { color: var(--txt); }
+
+/* ══════════════════════════════════════════════
+   Responsive
+   ══════════════════════════════════════════════ */
+
+/* Tablets */
+@media (max-width: 980px) {
+  .app     { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .grid,
+  .result  { grid-template-columns: 1fr; }
+  .controls { grid-template-columns: 1fr; }
+  .topbar  { display: block; }
+  .chipbar { justify-content: flex-start; margin-top: 14px; }
+}
+
+/* Móviles */
+@media (max-width: 580px) {
+  main { padding: 18px; }
+  .mini-grid,
+  .chart-row,
+  .add-dataset { grid-template-columns: 1fr; }
+  h1 { font-size: 38px; }
+}
